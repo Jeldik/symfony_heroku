@@ -1,23 +1,19 @@
 <IfModule mod_rewrite.c>
-    <IfModule mod_negotiation.c>
-        Options -MultiViews
-    </IfModule>
-
+    Options +FollowSymlinks
     RewriteEngine On
 
-    # Redirect Trailing Slashes If Not A Folder...
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)/$ /$1 [L,R=301]
+    # Explicitly disable rewriting for front controllers
+    RewriteRule ^/web/app_dev.php - [L]
+    RewriteRule ^/web/app.php - [L]
 
-    # Handle Front Controller...
-    RewriteCond %{REQUEST_FILENAME} !-d
+    # Fix the bundles folder
+    RewriteRule ^bundles/(.*)$ /web/bundles/$1  [QSA,L]
+
+    # Fix the assets folder
+    RewriteRule ^assets/(.*)$ /web/assets/$1  [QSA,L]
+
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ index.php [L]
-
-    # Handle Authorization Header
-    RewriteCond %{HTTP:Authorization} .
-    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-
-    AddType 'text/css; charset=UTF-8' css
-
+    # Change below before deploying to production
+    #RewriteRule ^(.*)$ /web/app.php [QSA,L]
+    RewriteRule ^(.*)$ /web/app_dev.php [QSA,L]
 </IfModule>
